@@ -27,9 +27,9 @@ public class SwaggerConfig {
                         .title("Shipment Management API")
                         .description("Shipment Management API")
                         .version("0.0.1-SNAPSHOT")
-                        .contact(new Contact("liuweidong", "blog.csdn.net", "liuweiodng0802@163.com"))
+                        .contact(new Contact("liuweidong", "https://github.com/Superhonour/superhonor-shipment", "liuweiodng0802@163.com"))
                         .license("The Apache License")
-                        .licenseUrl("http://www.baidu.com")
+                        .licenseUrl("https://github.com/Superhonour")
                         .build());
     }
 }
