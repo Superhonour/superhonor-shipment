@@ -4,6 +4,7 @@ import com.superhonor.shipment.filter.JwtAuthenticationFilter;
 import com.superhonor.shipment.service.impl.DatabaseUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -42,6 +43,7 @@ public class WebSecurityConfig {
         @Qualifier("authenticationEntryPointImpl")
         private AuthenticationEntryPoint entryPoint;
 
+        @Bean
         public JwtAuthenticationFilter getJwtAuthenticationFilter() {
             return new JwtAuthenticationFilter();
         }
@@ -74,7 +76,9 @@ public class WebSecurityConfig {
                     "/swagger-resources/configuration/ui",//用来获取支持的动作
                     "/swagger-resources",//用来获取api-docs的URI
                     "/swagger-resources/configuration/security",//安全选项
-                    "/swagger-ui.html");
+                    "/swagger-ui.html",
+                    "/h2",
+                    "/h2/*");
         }
     }
 }

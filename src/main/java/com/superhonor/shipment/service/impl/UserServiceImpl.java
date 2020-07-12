@@ -42,4 +42,10 @@ public class UserServiceImpl implements UserService {
         return new org.springframework.security.core.userdetails
                 .User(username,user.getPassword(),authorities);
     }
+
+    @Override
+    public User getUserByUserName(String username) {
+        return userRepository.findByUsername(username);
+    }
+
 }

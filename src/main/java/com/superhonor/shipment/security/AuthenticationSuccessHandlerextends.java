@@ -1,6 +1,8 @@
 package com.superhonor.shipment.security;
 
 
+import com.alibaba.fastjson.JSON;
+import com.superhonor.shipment.result.OperationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -32,8 +34,10 @@ public class AuthenticationSuccessHandlerextends extends SavedRequestAwareAuthen
         response.setStatus(HttpServletResponse.SC_OK);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
+
         response.getWriter()
-                .println("{\"tokenType\":\"Bearer\",\"token\": \"" + tokenProvider.createJwtToken(authentication) + "\"}");
+                .println(JSON.toJSONString(OperationResult.Success("登录成功！",
+                        new Token("Bearer", tokenProvider.createJwtToken(authentication)))));
     }
 
 }

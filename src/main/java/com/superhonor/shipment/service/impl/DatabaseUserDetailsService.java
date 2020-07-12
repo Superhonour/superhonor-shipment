@@ -32,7 +32,6 @@ public class DatabaseUserDetailsService implements UserDetailsService {
             //throw exception inform front end not this user
             throw new UsernameNotFoundException("user + " + username + "not found.");
         }
-        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
         List<String> roleCodeList = userRepository.queryUserOwnedRoleCodes(username);
 
@@ -40,7 +39,7 @@ public class DatabaseUserDetailsService implements UserDetailsService {
                 roleCodeList.stream().map(e -> new SimpleGrantedAuthority(e)).collect(Collectors.toList());
 
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                user.getUsername(), encoder.encode(user.getPassword()), authorities);
+                user.getUsername(), user.getPassword(), authorities);
 
         return userDetails;
     }

@@ -25,6 +25,10 @@ spring:
       path: /h2  #进行该配置，你就可以通过YOUR_URL/h2访问h2 web consloe。YOUR_URL是你程序的访问URl。
       enabled: true  #进行该配置，程序开启时就会启动h2 web consloe。当然这是默认的，如果你不想在启动程序时启动h2 web consloe，那么就设置为false。
 
-
+rsa:
+  encrypt:
+    debug: false # true表示开启调试，不加密。（方便开发时测试）
+    publicKey: 123456
+    privateKey: 123456
 
 

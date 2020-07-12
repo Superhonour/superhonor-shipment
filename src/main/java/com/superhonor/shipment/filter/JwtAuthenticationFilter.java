@@ -2,6 +2,7 @@ package com.superhonor.shipment.filter;
 
 import com.superhonor.shipment.security.JwtTokenProvider;
 import com.superhonor.shipment.service.UserService;
+import com.superhonor.shipment.service.impl.DatabaseUserDetailsService;
 import com.superhonor.shipment.util.AuthParameters;
 import io.jsonwebtoken.Jwts;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private AuthParameters authParameters;
 
     @Autowired
-    private UserService userService;
+    private DatabaseUserDetailsService userService;
 
     //1.从每个请求header获取token
     //2.调用前面写的validateToken方法对token进行合法性验证
@@ -48,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (token != null && jwtTokenProvider.validateToken(token)) {
             String username = getUsernameFromJwt(token, authParameters.getJwtTokenSecret());
 
-            UserDetails userDetails = userService.getUserDetailByUserName(username);
+            UserDetails userDetails = userService.loadUserByUsername(username);
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     userDetails,null,userDetails.getAuthorities());
