@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: superhonor-shipment
+  profiles:
+    active: dev
+
+---
+spring:
+  profiles: dev
+
+logging:
+  config: classpath:logback/logback-dev.xml
+
+---
+spring:
+  profiles: sit
+
+logging:
+  config: classpath:logback/logback-sit.xml
+  dir: /data/logs
