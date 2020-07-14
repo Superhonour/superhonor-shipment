@@ -43,14 +43,14 @@ public class ShipmentServiceImpl implements ShipmentService {
         Optional <Shipment>  optional = shipmentRepository.findById(changeRootQuantityDTO.getShipmentId());
         List <ShipmentItem> items = itemService.getByShipmentId(changeRootQuantityDTO.getShipmentId());
         Shipment shipment = optional.get();
-        BigDecimal total = BigDecimal.ZERO;
+        final BigDecimal[] total = {BigDecimal.ZERO};
         items.forEach(e -> {
             BigDecimal amount = e.getAmount().multiply(changeRootQuantityDTO.getProportion()).setScale(6, BigDecimal.ROUND_FLOOR);
-            total.add(amount);
+            total[0] = total[0].add(amount);
             e.setAmount(amount);
             itemService.save(e);
         });
-        shipment.setTotal(total.setScale(6, BigDecimal.ROUND_FLOOR));
+        shipment.setTotal(total[0].setScale(6, BigDecimal.ROUND_FLOOR));
         shipmentRepository.save(shipment);
     }
 }
