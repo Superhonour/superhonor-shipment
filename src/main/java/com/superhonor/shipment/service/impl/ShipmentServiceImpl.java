@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,11 +43,14 @@ public class ShipmentServiceImpl implements ShipmentService {
         Optional <Shipment>  optional = shipmentRepository.findById(changeRootQuantityDTO.getShipmentId());
         List <ShipmentItem> items = itemService.getByShipmentId(changeRootQuantityDTO.getShipmentId());
         Shipment shipment = optional.get();
-        shipment.setTotal(shipment.getTotal().multiply(changeRootQuantityDTO.getProportion()));
-        shipmentRepository.save(shipment);
+        BigDecimal total = BigDecimal.ZERO;
         items.forEach(e -> {
-            e.setAmount(e.getAmount().multiply(changeRootQuantityDTO.getProportion()));
+            BigDecimal amount = e.getAmount().multiply(changeRootQuantityDTO.getProportion()).setScale(6, BigDecimal.ROUND_FLOOR);
+            total.add(amount);
+            e.setAmount(amount);
             itemService.save(e);
         });
+        shipment.setTotal(total.setScale(6, BigDecimal.ROUND_FLOOR));
+        shipmentRepository.save(shipment);
     }
 }

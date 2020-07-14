@@ -130,7 +130,6 @@ class SuperhonorShipmentApplicationTests {
     public void changeRootQuantityTest() throws Exception {
         ChangeRootQuantityDTO changeRootQuantityDTO = new ChangeRootQuantityDTO();
         changeRootQuantityDTO.setProportion(new BigDecimal("2"));
-        changeRootQuantityDTO.setType(1);
         changeRootQuantityDTO.setShipmentId(1L);
         String jsonString = JSON.toJSONString(changeRootQuantityDTO);
         MvcResult mvcResult = mockMvc.perform(

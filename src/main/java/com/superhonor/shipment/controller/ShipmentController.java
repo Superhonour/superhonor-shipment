@@ -5,6 +5,7 @@ import com.superhonor.shipment.dto.ShipmentDTO;
 import com.superhonor.shipment.dto.ShipmentItemDTO;
 import com.superhonor.shipment.dto.ShipmentSplitDTO;
 import com.superhonor.shipment.entity.ShipmentItem;
+import com.superhonor.shipment.exception.UserFriendlyException;
 import com.superhonor.shipment.result.OperationResult;
 import com.superhonor.shipment.service.ShipmentItemService;
 import com.superhonor.shipment.service.ShipmentService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -61,6 +63,9 @@ public class ShipmentController {
     @ApiOperation("changeRootQuantity")
     @PreAuthorize("isAuthenticated()")
     public OperationResult<String> changeRootQuantity(@RequestBody ChangeRootQuantityDTO changeRootQuantityDTO) {
+        if(BigDecimal.ZERO.compareTo(changeRootQuantityDTO.getProportion()) < 0) {
+            throw new UserFriendlyException("变更比例参数不能是负数");
+        }
         shipmentService.changeRootQuantity(changeRootQuantityDTO);
         return OperationResult.Success("change success!", null);
     }

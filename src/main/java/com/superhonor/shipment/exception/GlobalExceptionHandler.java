@@ -1,57 +1,39 @@
 package com.superhonor.shipment.exception;
 
-import com.superhonor.shipment.entity.ErrorResponseEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import com.superhonor.shipment.result.OperationResult;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author liuweidong
  */
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+@Slf4j
+@ControllerAdvice(basePackages = "com.superhonor")
+public class GlobalExceptionHandler {
+
+    final static String DEFAULT_ERROR_MASSAGE = "系统走神了,请稍候再试.";
 
     /**
-     * 捕获  RuntimeException 异常
-     *
-     * @param request  request
-     * @param e        exception
-     * @param response response
-     * @return 响应结果
+     * 异常处理
      */
-    @ExceptionHandler(RuntimeException.class)
-    public ErrorResponseEntity runtimeExceptionHandler(HttpServletRequest request, final Exception e, HttpServletResponse response) {
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-
-        RuntimeException exception = (RuntimeException) e;
-        return new ErrorResponseEntity(400, exception.getMessage());
-    }
-
-    /**
-     * 通用的接口映射异常处理方
-     */
-    @Override
-    protected ResponseEntity <Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        if (ex instanceof MethodArgumentNotValidException) {
-            MethodArgumentNotValidException exception = (MethodArgumentNotValidException) ex;
-            return new ResponseEntity<>(new ErrorResponseEntity(status.value(), exception.getBindingResult().getAllErrors().get(0).getDefaultMessage()), status);
+    @ResponseBody
+    @ExceptionHandler(Exception.class)
+    public OperationResult handle(HttpServletResponse response, Exception ex) {
+        OperationResult result = new OperationResult();
+        if (ex instanceof UserFriendlyException) {
+            log.error(ex.getMessage(), ex);
+            result.setCode(((UserFriendlyException) ex).getCode());
+            result.setMessage(ex.getMessage());
+        } else {
+            log.error(ex.getMessage(), ex);
+            result.setCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            result.setMessage(DEFAULT_ERROR_MASSAGE);
         }
-
-        if (ex instanceof MethodArgumentTypeMismatchException) {
-            MethodArgumentTypeMismatchException exception = (MethodArgumentTypeMismatchException) ex;
-
-            logger.error("参数转换失败，方法：" + exception.getParameter().getMethod().getName() + "，参数：" + exception.getName()+ ",信息：" + exception.getLocalizedMessage());
-
-            return new ResponseEntity<>(new ErrorResponseEntity(status.value(), "参数转换失败"), status);
-        }
-
-        return new ResponseEntity<>(new ErrorResponseEntity(status.value(), "参数转换失败"), status);
+        return result;
     }
 }

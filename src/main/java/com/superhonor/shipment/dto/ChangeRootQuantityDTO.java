@@ -16,10 +16,5 @@ import java.math.BigDecimal;
 public class ChangeRootQuantityDTO implements Serializable {
 
     private Long shipmentId;
-    /**
-     * 0: increase root quantity
-     * 1: decrease root quantity
-     */
-    private Integer type;
     private BigDecimal proportion;
 }
